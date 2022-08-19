@@ -4,12 +4,15 @@ const User = db.user;
 const Role = db.role;
 
 var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
+var bcrypt = require("bcrypt");
 
 exports.signup = (req, res) => {
   const user = new User({
-    username: req.body.username,
-    email: req.body.email,
+    email: req.body.email.toLocaleLowerCase(),
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    company: req.body.company,
+    job: req.body.job,
     password: bcrypt.hashSync(req.body.password, 8)
   });
 
@@ -64,7 +67,7 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   User.findOne({
-    username: req.body.username
+    email: req.body.email,
   })
     .populate("roles", "-__v")
     .exec((err, user) => {
